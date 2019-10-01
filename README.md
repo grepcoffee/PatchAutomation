@@ -2,7 +2,7 @@
 
 Utlizies InsightVM, Packer, and Ansible for AWS image creation and automation of patches
 
-#Required Variables
+# Required Variables
 
 1. INSIGHTVMBASEURL
    Rapid7 InsightVM Baseurl 
