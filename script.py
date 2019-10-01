@@ -237,18 +237,8 @@ def cleanup(instanceid):
     # ec2.instances.filter(InstanceIds=ids).stop()
     ec2.instances.filter(InstanceIds=ids).terminate()
 
-#######################################################################################################################
-
-# Get AMIID, Key name as a variable
-# Get VPC ID or subnet to launch instance
-
-# Get InsightVM base url as variable
-# Insight VM scan template id and Report ID as variable.
-
-# Launch an EC2 Instance with specific AMI tags
 insidvar = ec2launch()
 
-#check to see if the instance is running or struggling to come alive.
 status = "whatever"
 while status != 'running':
     status = instancestatus(insidvar)
@@ -257,7 +247,6 @@ while status != 'running':
         print('Instance is now Active')
         break
     time.sleep(5)
-######
 
 
 ipaddvar = ec2ip(insidvar)
@@ -267,8 +256,6 @@ ipaddvar = '192.168.10.100'
 print("Running InsightVM Scan")
 isid = insightvmscan(ipaddvar)
 
-#check to see if the scan is done or not
-status = "whatever"
 while status != 'finished':
     currentstatus = insightscanstatus(isid)
     if currentstatus == 'finished':
@@ -292,19 +279,6 @@ while status != 'finished':
 FinalReport = DownloadReport(ReportInstanceID)
 print(FinalReport)
 
-
-# Run Report with this Asset Scan results w/ compliance.
-# Report ID 13143
-# Update report with Scan ID
-# Run report and wait until its done
-# download report
-# Parse output into itmetrics db?
-
 print("Now Killing Instance")
 cleanup(insidvar)
 
-
-
-
-#Thinking Get report flow
-# Scan -> Get ScanID -> Get AssetID
