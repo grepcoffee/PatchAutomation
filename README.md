@@ -2,6 +2,8 @@
 
 Utlizies InsightVM, Packer, and Ansible for AWS image creation and automation of patches
 
+** Please note I am still updating the documentation ** 
+
 # Required Variables
 
 1. INSIGHTVMBASEURL
