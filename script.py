@@ -18,6 +18,7 @@ AWSSUBNETID = os.environ.get('AWSSUBNETID')
 
 INSIGHTTEMPLATEID = os.environ.get('INSIGHTTemplate')
 
+#Launch an EC2 Instance with Specific params
 def ec2launch():
     print("Launching Instance")
     ec2 = boto3.resource('ec2')
@@ -31,7 +32,7 @@ def ec2launch():
         SubnetId=AWSSUBNETID,
         InstanceType='t2.micro',
         KeyName= AWSKEYPAIR,
-    #    PrivateIpAddress='172.31.80.20',
+    #    PrivateIpAddress='192.168.10.102',
         TagSpecifications=[
             {
                 'ResourceType': 'instance',
@@ -47,7 +48,7 @@ def ec2launch():
     instanceid= instances[0].instance_id
     return instanceid # To spit this into the describe instances thingy
 
-#getting instance IP
+#getting instance IP for newly launched instance
 def ec2ip(instanceid):
     print("Printing Instance IPv4 address")
     desec2 = boto3.client('ec2')
@@ -131,6 +132,7 @@ def insightscanstatus(scanid):
     scanstatus = (scaninfo['status'])
     return scanstatus
 
+# Update InsightVM report to pull information needed for CIS benchmark compliance and patching
 def updateinsightvmreport(scanid):
     url = INSIGHTVMBASEURL + "api/3/reports/" + INSIGHTREPORTID
     scanid = "213798"
@@ -155,6 +157,7 @@ def updateinsightvmreport(scanid):
         exit(1)
     print(response.text)
 
+# Get scanned instance report ID 
 def GetScanReportInstance():
 
     url = INSIGHTVMBASEURL + "api/3/reports/" + INSIGHTREPORTID + "/generate"
@@ -182,6 +185,7 @@ def GetScanReportInstance():
     ScanReportInstance = str(RepInstID)
     return(ScanReportInstance)
 
+# Get scan status for instance
 def ReportGenerateStatus(ScanReportInstance):
     url = INSIGHTVMBASEURL + "api/3/reports/" + INSIGHTREPORTID +"/history/" + ScanReportInstance
 
@@ -206,7 +210,7 @@ def ReportGenerateStatus(ScanReportInstance):
     ReportGenerationStatus = reportstatus['status']
     return ReportGenerationStatus
 
-
+# Get report for scanned asset
 def DownloadReport(ScanReportInstance):
     url = INSIGHTVMBASEURL + "api/3/reports/"+ INSIGHTREPORTID +"/history/" + ScanReportInstance + "/output"
 
