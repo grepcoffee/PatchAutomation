@@ -241,6 +241,10 @@ def cleanup(instanceid):
     # ec2.instances.filter(InstanceIds=ids).stop()
     ec2.instances.filter(InstanceIds=ids).terminate()
 
+# ---------------------------------------------
+#                 Main 
+# ---------------------------------------------
+  
 insidvar = ec2launch()
 
 status = "whatever"
