@@ -290,3 +290,64 @@ print(FinalReport)
 print("Now Killing Instance")
 cleanup(insidvar)
 
+#### BOO
+import requests
+
+def get_image_list(image_name, version):
+    artifactory_url = 'https://your-artifactory-url'
+    api_key = 'your-api-key'  # Replace with your Artifactory API key
+
+    headers = {'X-JFrog-Art-Api': api_key}
+    repositories_url = f'{artifactory_url}/api/repositories'
+
+    response = requests.get(repositories_url, headers=headers)
+
+    if response.status_code == 200:
+        repositories = response.json()
+        image_list = []
+
+        for repo in repositories:
+            repo_key = repo['key']
+            repo_path = f'{artifactory_url}/{repo_key}'
+
+            response = requests.get(repo_path, headers=headers)
+
+            if response.status_code == 200:
+                repo_data = response.json()
+                items = repo_data['children']
+
+                for item in items:
+                    item_url = f"{artifactory_url}/{item['uri']}"
+                    response = requests.get(item_url, headers=headers)
+
+                    if response.status_code == 200:
+                        item_data = response.json()
+                        if item_data['repo'] == repo_key and item_data['path'].endswith(image_name):
+                            properties = item_data['properties']
+                            item_version = properties.get('version', '')
+                            if item_version == version:
+                                image = {
+                                    'name': item_data['path'],
+                                    'version': item_version,
+                                    'upload_date': item_data['created']
+                                }
+                                image_list.append(image)
+
+        return image_list
+
+    else:
+        print('Failed to retrieve repositories. Status code:', response.status_code)
+        return []
+
+# Example usage
+image_name = 'my-image'
+version = '1.0.0'
+images = get_image_list(image_name, version)
+
+if images:
+    print(f"Images with name '{image_name}', version '{version}':")
+    for image in images:
+        print(f"Name: {image['name']}, Version: {image['version']}, Upload Date: {image['upload_date']}")
+else:
+    print("No images found.")
+
